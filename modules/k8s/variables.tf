@@ -21,7 +21,7 @@ variable "k8s_api_v6_address" {
 
 variable "use_public_ipv4" {
   type    = bool
-  default = false
+  default = true
 }
 
 variable "network_config" {
@@ -58,6 +58,7 @@ variable "k8s_node_agent_sa_id" {
   type = string
 }
 
+# pod addresses
 variable "cluster_ipv4_range" {
   type    = string
   default = "10.112.0.0/16"

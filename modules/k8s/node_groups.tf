@@ -19,7 +19,7 @@ resource "yandex_kubernetes_node_group" "node_group" {
     network_interface {
       ipv4               = each.value.use_ipv4
       ipv6               = each.value.use_ipv6
-      nat                = false
+      nat                = true
       subnet_ids         = [for subnet in data.yandex_vpc_subnet.subnets : subnet.subnet_id]
       security_group_ids = [
         yandex_vpc_security_group.k8s_sg_main.id,

@@ -1,0 +1,43 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alb-demo-tls
+  annotations:
+    # subnets in all azs
+    ingress.alb.yc.io/subnets: e9b2p50gaq3cson3a2qv,e2l137pk1godlo7hengq,fl830efe6ias3ld5ivn3
+    # alb-idp
+    ingress.alb.yc.io/security-groups: enp2pngeb6sdhnbl1tjo
+    ingress.alb.yc.io/external-ipv4-address: auto
+    ingress.alb.yc.io/group-name: idp
+spec:
+  tls:
+    - hosts:
+        - <доменное_имя>
+      secretName: yc-certmgr-cert-id-<идентификатор_TLS-сертификата>
+  rules:
+    - host: <доменное_имя>
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: service-hello
+                port:
+                  name: http
+---
+apiVersion: v1
+  kind: Service
+  metadata:
+    name: service-hello
+  spec:
+    selector:
+      run: hello-nginx
+    type: NodePort
+    ports:
+      - name: http
+        port: 80
+        targetPort: 80
+        protocol: TCP
+        nodePort: 30080

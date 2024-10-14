@@ -34,6 +34,22 @@ resource "yandex_vpc_security_group" "k8s_sg_main" {
     v4_cidr_blocks = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
   }
 
+  ingress {
+    protocol       = "TCP"
+    description    = "https://wiki.yandex-team.ru/cloud/security/services/bastion2/k8s-bastion/?from=%2Fcloud%2Fsecurity%2Fservices%2Fk8s-bastion#otbastiondomk8s"
+    port           = 443
+    v6_cidr_blocks = var.bastion_locations
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "any. for sandbox only. no authorization to bastion."
+    from_port      = 0
+    to_port        = 65535
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
   egress {
     protocol       = "ANY"
     description    = "Rule allows all outgoing traffic. Nodes can connect to Yandex Container Registry, Yandex Object Storage, Docker Hub, and so on."
@@ -43,12 +59,6 @@ resource "yandex_vpc_security_group" "k8s_sg_main" {
     to_port        = 65535
   }
 
-    ingress {
-      protocol       = "TCP"
-      description    = "https://wiki.yandex-team.ru/cloud/security/services/bastion2/k8s-bastion/?from=%2Fcloud%2Fsecurity%2Fservices%2Fk8s-bastion#otbastiondomk8s"
-      port           = 443
-      v6_cidr_blocks = var.bastion_locations
-    }
 }
 
 resource "yandex_vpc_security_group" "k8s_sg_public_services" {
@@ -77,14 +87,6 @@ resource "yandex_vpc_security_group" "k8s_sg_nodes" {
   description = "Only for nodes. As in https://cloud.yandex.ru/docs/managed-kubernetes/operations/security-groups#examples"
   network_id  = var.network_config.network_id
 
-#   TODO replace on IAM YDB endpoint
-#   egress {
-#     protocol          = "ANY"
-#     description       = "Rule allows outgoing traffic to YDB security group."
-#     security_group_id = var.ydb_security_group_id
-#     port              = 2135
-#   }
-
   ingress {
     protocol       = "ANY"
     description    = "Rule allows incoming traffic from the devops (office) nets to the NodePort port range (For access to k8s services/load-balancers)."
@@ -93,6 +95,21 @@ resource "yandex_vpc_security_group" "k8s_sg_nodes" {
     from_port      = 30000
     to_port        = 32767
   }
+
+  #   TODO replace on IAM YDB endpoint
+  #   egress {
+  #     protocol          = "ANY"
+  #     description       = "Rule allows outgoing traffic to YDB security group."
+  #     security_group_id = var.ydb_security_group_id
+  #     port              = 2135
+  #   }
+
+#   egress {
+#     protocol          = "TCP"
+#     description       = "Container Registry access."
+#     v4_cidr_blocks    = [ "0.0.0.0/0" ]
+#     port              = 443
+#   }
 }
 
 resource "yandex_vpc_security_group" "k8s_sg_master" {

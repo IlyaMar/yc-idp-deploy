@@ -3,7 +3,9 @@ module "constants0" {
 }
 
 locals {
+  # only for k8s cluster name
   env            = "prod"
+  ycp_profile = "sandbox-prod"
   endpoints = {
     api                       = "api.cloud.yandex.net:443"
     access_service            = "direct://as.private-api.cloud.yandex.net:4286"
@@ -59,7 +61,7 @@ locals {
         core_fraction        = 20
         memory               = 4
         use_ipv4             = true
-        use_ipv6             = true
+        use_ipv6             = false
       }
     }
   }
@@ -117,7 +119,7 @@ module "infra" {
   source = "../../modules/infra"
 
   env                                       = local.env
-  ycp_profile                               = local.env
+  ycp_profile                               = local.ycp_profile
   yc_api_endpoint                           = local.endpoints.api
   idp_service_folder_id           = local.idp_service_folder_id
   use_internal_ca_at_external_secret_stores = false

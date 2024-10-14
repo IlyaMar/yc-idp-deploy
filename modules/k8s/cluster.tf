@@ -9,8 +9,8 @@ resource "yandex_kubernetes_cluster" "cluster" {
 
   cluster_ipv4_range = var.cluster_ipv4_range
   service_ipv4_range = var.service_ipv4_range
-  cluster_ipv6_range = var.cluster_ipv6_range
-  service_ipv6_range = var.service_ipv6_range
+#   cluster_ipv6_range = var.cluster_ipv6_range
+#   service_ipv6_range = var.service_ipv6_range
 
   service_account_id      = data.yandex_iam_service_account.k8s_cluster_agent_sa.id
   node_service_account_id = data.yandex_iam_service_account.k8s_node_agent_sa.id
