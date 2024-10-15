@@ -15,3 +15,14 @@ spec:
       containers:
         - name: hello-app
           image: cr.yandex/crpjd37scfv653nl11i9/hello:1.1
+          volumeMounts:
+            - name: secret-volume
+              readOnly: true
+              mountPath: "/etc/secret-volume"
+          ports:
+            - containerPort: 80
+
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: k8s-secret

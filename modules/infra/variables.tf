@@ -81,9 +81,11 @@ variable "k8s_api_v6_address_id" {
 
 variable "office_v6_nets" {
   type    = list(string)
+
   default = [
     "2620:10f:d000::/44",
-    "2a02:6b8::/32",
+    "2a02:6b8::/29",
+    "2a0e:fd87::/32",
     "2a0e:fd80::/29",
     "2a02:6bf:8000::/34"
   ]
